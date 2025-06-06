@@ -85,9 +85,9 @@ function projectWithdrawFrom(project) {
   <main>
     <h1>Project manager</h1>
 
-    <h2 style="padding-top: 20px">Add Project</h2>
-
-    <button v-on:click="projectRead(null)">Créer un projet</button>
+    <section class="main-buttons">
+      <button id="addProject" v-on:click="projectRead(null)">Créer un projet</button>
+    </section>
 
     <Teleport to="body">
       <div v-if="openProjectItem" class="modal">
@@ -97,8 +97,6 @@ function projectWithdrawFrom(project) {
       <div v-if="openProjectItem" class="overlay" @click="closeModal"></div>
     </Teleport>
 
-    <h2 style="padding-top: 20px">Task list</h2>
-
     <projectTable :projects="projects" :teams="teams" :myTeam="myTeam" @projectRead="projectRead" @closeModal="closeModal" @projectAssignTo="projectAssignTo" @projectWithdrawFrom="projectWithdrawFrom">
       
     </projectTable>
@@ -106,32 +104,26 @@ function projectWithdrawFrom(project) {
 </template>
 
 <style scoped>
-.task {
+
+.main-buttons {
   display: flex;
-  gap: 10px;
+  justify-content: end;
+  margin: 20px 0;
 }
 
-.task-table {
-  display: flex;
-  max-width: 1200px;
-  width: 100%;
+#addProject {
+  background-color: #22EA17;
+  color: black;
+  padding: 8px 14px;
+  border-radius: 3px;
+  border: 1px solid black;
+  transition-duration: 0.3s;
 }
 
-.task-table ul {
-  width: 20%;
-  padding-inline-start: 0;
-}
-
-li {
-  list-style: none;
-  text-align: center;
-  padding-bottom: 10px;
-}
-
-h3 {
-  width: 100%;
-  text-align: center;
-  padding-bottom: 0.8em;
+#addProject:hover {
+  background-color: white;
+  color: #138a0d;
+  border-color: #138a0d;
 }
 
 .modal {

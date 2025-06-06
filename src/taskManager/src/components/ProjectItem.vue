@@ -22,7 +22,7 @@
   </div>
   <div class="projectItemActions">
     <button v-if="!project" id='confirmprojectUpdate' v-on:click="$emit('projectCreate', project)">Ajouter le projet</button>
-    <!-- <button v-if="project" id='confirmprojectUpdate' v-on:click="$emit('projectUpdate', project)">Confirmer les modifications</button> -->
+    <!-- <button v-if="projecta id='confirmprojectUpdate' v-on:click="$emit('projectUpdate', project)">Confirmer les modifications</button> -->
     <button v-if="project" id='deleteproject' v-on:click="$emit('projectDelete', id)">Supprimer le projet</button>
   </div>
 </template>

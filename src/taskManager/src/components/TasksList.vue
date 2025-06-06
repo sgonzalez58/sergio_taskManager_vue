@@ -89,10 +89,10 @@ function closeModal() {
 </script>
 
 <template>
-    <main>
+  <main>
     <h1>Task manager</h1>
 
-    <h2 style="padding-top: 20px">Main info</h2>
+    <!-- <h2 style="padding-top: 20px">Main info</h2>
     <div>
       <p>Nombre de tasks : {{ tasks.length }}</p>
       <p>Tasks backlog : {{ tasksBacklog.length }}</p>
@@ -100,50 +100,58 @@ function closeModal() {
       <p>Tasks in progress : {{ tasksInProgress.length }}</p>
       <p>Tasks in review : {{ tasksInReview.length }}</p>
       <p>Tasks done : {{ tasksDone.length }}</p>
-    </div>
+    </div> -->
 
-    <h2 style="padding-top: 20px">Add Task</h2>
-
-    <button v-on:click="taskRead(null)">Ajouter une tâche</button>
-
+    <section class="main-buttons">
+      <button id="addTask" v-on:click="taskRead(null)">Ajouter une tâche</button>
+    </section>
     <Teleport to="body">
       <div v-if="openTaskItem" class="modal">
-        <taskItem :task="currentTaskOpen" @taskUpdate="taskUpdate" @taskDelete="taskDelete" @closeModal="closeModal" @taskCreate="taskCreate"/>
+        <taskItem :task="currentTaskOpen" @taskUpdate="taskUpdate" @taskDelete="taskDelete" @closeModal="closeModal"
+          @taskCreate="taskCreate" />
       </div>
       <div v-if="openTaskItem" class="overlay" @click="closeModal"></div>
     </Teleport>
 
-    <h2 style="padding-top: 20px">Task list</h2>
-
     <div class="task-table">
-      <ul>
-        <h3>Task Backlog</h3>
+      <ul class="task-list">
+        <div class="task-list-title">
+          <h3>Task Backlog</h3>
+        </div>
         <li v-for="task in tasksBacklog" :key="task.id">
-          <button @click="taskRead(task)">{{ task.label }}</button>
+          <button class="task-button" @click="taskRead(task)">{{ task.label }}</button>
         </li>
       </ul>
-      <ul>
-        <h3>Task Todo</h3>
+      <ul class="task-list">
+        <div class="task-list-title">
+          <h3>Task Todo</h3>
+        </div>
         <li v-for="task in tasksTodo" :key="task.id">
-          <button @click="taskRead(task)">{{ task.label }}</button>
+          <button class="task-button" @click="taskRead(task)">{{ task.label }}</button>
         </li>
       </ul>
-      <ul>
-        <h3>Task in Progress</h3>
+      <ul class="task-list">
+        <div class="task-list-title">
+          <h3>Task in Progress</h3>
+        </div>
         <li v-for="task in tasksInProgress" :key="task.id">
-          <button @click="taskRead(task)">{{ task.label }}</button>
+          <button class="task-button" @click="taskRead(task)">{{ task.label }}</button>
         </li>
       </ul>
-      <ul>
-        <h3>Task in Review</h3>
+      <ul class="task-list">
+        <div class="task-list-title">
+          <h3>Task in Review</h3>
+        </div>
         <li v-for="task in tasksInReview" :key="task.id">
-          <button @click="taskRead(task)">{{ task.label }}</button>
+          <button class="task-button" @click="taskRead(task)">{{ task.label }}</button>
         </li>
       </ul>
-      <ul>
-        <h3>Task Done</h3>
+      <ul class="task-list">
+        <div class="task-list-title">
+          <h3>Task Done</h3>
+        </div>
         <li v-for="task in tasksDone" :key="task.id">
-          <button @click="taskRead(task)">{{ task.label }}</button>
+          <button class="task-button" @click="taskRead(task)">{{ task.label }}</button>
         </li>
       </ul>
     </div>
@@ -151,33 +159,87 @@ function closeModal() {
 </template>
 
 <style scoped>
+.main-buttons {
+  display: flex;
+  justify-content: end;
+  margin: 20px 0;
+}
+
+#addTask {
+  background-color: #22EA17;
+  color: black;
+  padding: 8px 14px;
+  border-radius: 3px;
+  border: 1px solid black;
+  transition-duration: 0.3s;
+}
+
+#addTask:hover {
+  background-color: white;
+  color: #138a0d;
+  border-color: #138a0d;
+}
+
 .task {
   display: flex;
   gap: 10px;
 }
 
 .task-table {
+  margin: 20px 0;
   display: flex;
   max-width: 1200px;
   width: 100%;
+  background-color: #C3F9FF;
+  border-radius: 10px;
+  overflow: hidden;
+  height: 800px;
+  max-height: 70vh;
 }
 
 .task-table ul {
   width: 20%;
   padding-inline-start: 0;
+  margin: 0;
+}
+
+.task-list{
+  border: 1px solid #59EEFF;
+}
+
+.task-list-title {
+  background-color: #ACF7FF;
+  padding: 20px;
+  border-bottom: 1px solid #59EEFF;
+}
+
+.task-table ul h3 {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  text-align: center;
 }
 
 li {
   list-style: none;
   text-align: center;
-  padding-bottom: 10px;
+  margin: 20px;
 }
 
-h3 {
-  width: 100%;
-  text-align: center;
-  padding-bottom: 0.8em;
+.task-button{
+  background-color: #22A6FF;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 3px;
+  border: 1px solid #22A6FF;
+  transition-duration: 0.3s;
 }
+
+.task-button:hover {
+  background-color: white;
+  color: #22A6FF;
+}
+
 
 .modal {
   position: fixed;
