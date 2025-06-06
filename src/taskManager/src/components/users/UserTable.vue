@@ -40,10 +40,14 @@ defineProps({
   users: {
     type: Array,
     required: true
+  },
+  teams: {
+    type: Array,
+    required: true
   }
 });
 
-defineEmits(['closeModal', 'projectAssignTo', 'projectWithdrawFrom'])
+defineEmits(['closeModal', 'userRead'])
 </script>
 
 <style scoped>

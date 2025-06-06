@@ -2,6 +2,7 @@
 import { ref } from "vue"
 
 import userTable from "../users/UserTable.vue"
+import userItem from "../users/UserItem.vue"
 
 const users = ref([])
 
@@ -11,18 +12,44 @@ fetch('http://localhost:3000/users')
   .then((res) => res.json())
   .then((res) => {
     users.value = res
-    for (const user in users) {
-      if (user.id > current_id) {
+    for (const user of users.value) {
+      if (user.id > current_id.value) {
         current_id.value = user.id + 1;
       }
     }
   })
 
+const teams = ref([]);
+
+fetch('http://localhost:3000/teams')
+  .then((res) => res.json())
+  .then((res) => {
+    teams.value = res
+  })
+  
 const openUserItem = ref(false)
 
+const formData = ref({})
 let currentUserOpen = ref({})
 
+function userCreate() {
+  formData.value.id = current_id.value++;
+  users.value.push(formData.value)
+  console.log(currentUserOpen.value, formData.value, users, current_id)
+  closeModal();
+}
+
 function userRead(user) {
+  formData.value = {};
+  if(user){
+    formData.value = {
+      id: user.id,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      email: user.email,
+      type: user.type
+    }
+  }
   currentUserOpen.value = user;
   openUserItem.value = true;
 }
@@ -42,11 +69,12 @@ function closeModal() {
 
     <Teleport to="body">
       <div v-if="openUserItem" class="modal">
+        <userItem :user="currentUserOpen" :teams="teams" :formData="formData" @closeModal="closeModal" @userCreate="userCreate"/>
       </div>
       <div v-if="openUserItem" class="overlay" @click="closeModal"></div>
     </Teleport>
 
-    <userTable :users="users" @userRead="userRead" @closeModal="closeModal"/>
+    <userTable :users="users" :teams="teams" @userRead="userRead" @closeModal="closeModal"/>
   </main>
 </template>
 

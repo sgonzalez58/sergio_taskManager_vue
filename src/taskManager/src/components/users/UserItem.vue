@@ -1,53 +1,74 @@
 <template>
-  <div class="projectItemHeader">
-    Création d'un projet
+  <div class="userItemHeader">
+    {{ formData?.id ? "Modification d'un utilisateur" : "Création d'un utilisateur" }} 
     <button id='closeModal' v-on:click="$emit('closeModal')">X</button>
   </div>
-  <div class="projectItemInfo">
-    <div class="projectItemInfosPrincipales">
+  <div class="userItemInfo">
+    <div class="userItemInfosPrincipales">
       <div class="flex-col">
-        <label for="projectLabel">Titre du projet</label>
-        <input id="projectLabel" :value="project?.label" placeholder="Titre du project">
+        <p>Prénom de l'utilisateur</p>
+        <input id="userFirstName" v-model="formData.first_name" placeholder="Prénom de l'utisateur">
+      </div>
+      <div class="flex-col">
+        <p>Nom de l'utilisateur</p>
+        <input id="userLastName" v-model="formData.last_name" placeholder="Nom de l'utisateur">
+      </div>
+      <div class="flex-col">
+        <p>Email de l'utilisateur</p>
+        <input type="email" id="userEmail" v-model="formData.email" placeholder="Email de l'utisateur">
       </div>
     </div>
-    <div class="projectItemInfosEquipe">
+    <div class="userItemInfosEquipe">
       <div class="flex-col">
-        <p>Equipe assigné à la tâche</p>
-        <select id="projectTeam" :value="project?.team_id ? project?.team_id : myTeam">
+        <p>Rôle de l'utisateur</p>
+        <select id="userRole" v-model="formData.type">
+          <option value="dev">Développeur</option>
+          <option value="manager">Manageur</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+      <div class="flex-col">
+        <p>Equipe assigné</p>
+        <select id="userTeam" :value="findTeam(formData.id)">
           <option value="0">No team assigned</option>
-          <option v-for="team in teams" :key="team.id" :value="team.id" :disabled="team.id != myTeam">{{ team.name }}</option>
+          <option v-for="team in teams" :key="team.id" :value="team.id">{{ team.name }}</option>
         </select>
       </div>
     </div>
   </div>
-  <div class="projectItemActions">
-    <button v-if="!project" id='confirmprojectUpdate' v-on:click="$emit('projectCreate', project)">Ajouter le projet</button>
-    <!-- <button v-if="projecta id='confirmprojectUpdate' v-on:click="$emit('projectUpdate', project)">Confirmer les modifications</button> -->
-    <button v-if="project" id='deleteproject' v-on:click="$emit('projectDelete', id)">Supprimer le projet</button>
+  <div class="userItemActions">
+    <button v-if="!user" id='confirmuserUpdate' v-on:click="$emit('userCreate')">Créer l'utilisateur</button>
+    <button v-if="user" id='confirmuserUpdate' v-on:click="$emit('userUpdate')">Confirmer les modifications</button>
+    <button v-if="user" id='deleteuser' v-on:click="$emit('userDelete')">Supprimer l'utilisateur</button>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue"
+import { defineEmits, defineProps } from "vue"
 
-const teams = ref([]);
-
-fetch('http://localhost:3000/teams')
-  .then((res) => res.json())
-  .then((res) => teams.value = res)
-
-
-defineProps({
-  project: {
+const props = defineProps({
+  formData: {
+    type: Object,
+    required: true
+  },
+  user: {
     type: Object
   },
-  myTeam : {
-    type: Number,
+  teams : {
+    type: Array,
     required: true
   }
 });
 
-defineEmits([/*'projectUpdate', */'projectDelete', 'closeModal', 'projectCreate'])
+function findTeam(user_id){
+  const team = props.teams.find((team) => team.managerID == user_id || team.members.includes(user_id));
+  if(team){
+    return team.id;
+  }
+  return 0;
+}
+
+defineEmits(['userUpdate', 'userDelete', 'closeModal', 'userCreate'])
 </script>
 
 <style>
@@ -68,7 +89,7 @@ defineEmits([/*'projectUpdate', */'projectDelete', 'closeModal', 'projectCreate'
   color: white;
 }
 
-.projectItemHeader{
+.userItemHeader{
   text-align: center;
   background-color: rgb(72, 188, 211);
   color: black;
@@ -77,7 +98,7 @@ defineEmits([/*'projectUpdate', */'projectDelete', 'closeModal', 'projectCreate'
   border: 2px solid rgb(72, 188, 211);
 }
 
-.projectItemInfo{
+.userItemInfo{
   display: flex;
   align-items: baseline;
   padding: 18px;
@@ -85,13 +106,13 @@ defineEmits([/*'projectUpdate', */'projectDelete', 'closeModal', 'projectCreate'
   color: black;
 }
 
-.projectItemInfo input, .projectItemInfo select{
+.userItemInfo input, .userItemInfo select{
   padding: 3px 6px;
   border-radius: 3px;
   border: 1px solid black;
 }
 
-.projectItemInfosPrincipales{
+.userItemInfosPrincipales{
   width: 70%;
   display: flex;
   flex-direction: column;
@@ -105,7 +126,7 @@ defineEmits([/*'projectUpdate', */'projectDelete', 'closeModal', 'projectCreate'
   flex-direction: column;
 }
 
-.projectItemInfosEquipe{
+.userItemInfosEquipe{
   width: 30%;
   padding-left: 30px;
   display: flex;
@@ -115,7 +136,7 @@ defineEmits([/*'projectUpdate', */'projectDelete', 'closeModal', 'projectCreate'
   gap: 10px;
 }
 
-.projectItemActions{
+.userItemActions{
   display: flex;
   gap: 10px;
   justify-content: center;
@@ -125,7 +146,7 @@ defineEmits([/*'projectUpdate', */'projectDelete', 'closeModal', 'projectCreate'
   flex-wrap: wrap;
 }
 
-#confirmprojectUpdate{
+#confirmuserUpdate{
   background-color: rgb(94, 211, 234);
   color: white;
   padding: 8px 14px;
@@ -134,12 +155,12 @@ defineEmits([/*'projectUpdate', */'projectDelete', 'closeModal', 'projectCreate'
   transition-duration: 0.3s;
 }
 
-#confirmprojectUpdate:hover{
+#confirmuserUpdate:hover{
   background-color: white;
   color: rgb(5, 156, 186);
 }
 
-#deleteproject{
+#deleteuser{
   background-color: rgb(241, 63, 63);
   color: white;
   padding: 8px 14px;
@@ -148,7 +169,7 @@ defineEmits([/*'projectUpdate', */'projectDelete', 'closeModal', 'projectCreate'
   transition-duration: 0.3s;
 }
 
-#deleteproject:hover{
+#deleteuser:hover{
   background-color: white;
   color: rgb(241, 63, 63);
 }
