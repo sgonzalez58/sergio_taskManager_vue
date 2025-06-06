@@ -20,7 +20,8 @@
           {{ teams.find((team) => team.id == project.team_id)?.name }}
         </td>
         <td>
-          <button>Modifier</button>
+          <button v-if="project.team_id != myTeam" @click="$emit('projectAssignTo', project)" :disabled="project.team_id && project.team_id != 0">Assigner mon équipe</button>
+          <button v-if="project.team_id == myTeam" @click="$emit('projectWithdrawFrom', project)" :disabled="project.team_id != myTeam">Retirer mon équipe</button>
         </td>
       </tr>
     </table>
@@ -28,7 +29,7 @@
 </template>
 
 <script setup>
-import { defineProps } from 'vue';
+import { defineProps, defineEmits } from 'vue';
 
 defineProps({
   projects: {
@@ -38,6 +39,12 @@ defineProps({
   teams: {
     type: Array,
     required: true
+  },
+  myTeam : {
+    type: Number,
+    required: true
   }
 });
+
+defineEmits(['closeModal', 'projectAssignTo', 'projectWithdrawFrom'])
 </script>

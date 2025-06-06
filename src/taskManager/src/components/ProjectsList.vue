@@ -2,7 +2,7 @@
 import { ref, computed } from "vue"
 
 import projectTable from "./ProjectTable.vue"
-import taskItem from "./TaskItem.vue"
+import projectItem from "./ProjectItem.vue"
 const projects = ref([])
 
 let current_id = ref(1);
@@ -26,54 +26,58 @@ fetch('http://localhost:3000/teams')
     teams.value = res
   })
 
+const myTeam = ref(1)
+
 const openProjectItem = ref(false)
 
 let currentProjectOpen = ref({})
 
-function taskCreate() {
-  let newTask = {
-    label: document.getElementById('taskLabel').value,
-    step: document.getElementById('taskStep').value,
+function projectCreate() {
+  let newProject = {
+    project_name: document.getElementById('projectLabel').value,
     id: current_id.value++,
-    projectID: document.getElementById('taskProjet').value,
-    estimatedTime: document.getElementById('taskEstimatedTime').value,
-    assignedTo: document.getElementById('taskDev').value
+    team_id: document.getElementById('projectTeam').value
   };
-  tasks.value.push(newTask)
-  document.getElementById('taskLabel').value = '';
-  document.getElementById('taskEstimatedTime').value = 0;
-  document.getElementById('taskStep').value = 0;
-  document.getElementById('taskProjet').value = 0;
-  document.getElementById('taskDev').value = 0;
+  projects.value.push(newProject)
+  document.getElementById('projectLabel').value = '';
+  document.getElementById('projectTeam').value = 0;
   closeModal();
 }
 
-function projectUpdate(task) {
-  task.label = document.getElementById('taskLabel').value;
-  task.estimatedTime = document.getElementById('taskEstimatedTime').value;
-  task.step = document.getElementById('taskStep').value;
-  task.projectID = document.getElementById('taskProjet').value;
-  task.assignedTo = document.getElementById('taskDev').value;
-  document.getElementById('taskLabel').value = '';
-  document.getElementById('taskEstimatedTime').value = 0;
-  document.getElementById('taskStep').value = 0;
-  document.getElementById('taskProjet').value = 0;
-  document.getElementById('taskDev').value = 0;
-  closeModal();
-}
+// function projectUpdate(task) {
+//   task.label = document.getElementById('taskLabel').value;
+//   task.estimatedTime = document.getElementById('taskEstimatedTime').value;
+//   task.step = document.getElementById('taskStep').value;
+//   task.projectID = document.getElementById('taskProjet').value;
+//   task.assignedTo = document.getElementById('taskDev').value;
+//   document.getElementById('taskLabel').value = '';
+//   document.getElementById('taskEstimatedTime').value = 0;
+//   document.getElementById('taskStep').value = 0;
+//   document.getElementById('taskProjet').value = 0;
+//   document.getElementById('taskDev').value = 0;
+//   closeModal();
+// }
 
 function projectDelete(id) {
-  tasks.value = tasks.value.filter((task) => id != task.id)
+  projects.value = projects.value.filter((project) => id != project.id)
   closeModal();
 }
 
 function projectRead(project) {
-  currentTaskOpen.value = task;
-  openTaskItem.value = true;
+  currentProjectOpen.value = project;
+  openProjectItem.value = true;
 }
 
 function closeModal() {
-  openTaskItem.value = false;
+  openProjectItem.value = false;
+}
+
+function projectAssignTo(project) {
+  project.team_id = myTeam.value;
+}
+
+function projectWithdrawFrom(project) {
+  project.team_id = 0;
 }
 </script>
 
@@ -87,15 +91,15 @@ function closeModal() {
 
     <Teleport to="body">
       <div v-if="openProjectItem" class="modal">
-        <taskItem :project="currentProjectOpen" @projectUpdate="projectUpdate" @projectDelete="projectDelete" @closeModal="closeModal"
-          @taskCreate="taskCreate" />
+        <projectItem :project="currentProjectOpen" :myTeam="myTeam" @projectDelete="projectDelete" @closeModal="closeModal"
+          @projectCreate="projectCreate" />
       </div>
       <div v-if="openProjectItem" class="overlay" @click="closeModal"></div>
     </Teleport>
 
     <h2 style="padding-top: 20px">Task list</h2>
 
-    <projectTable :projects="projects" :teams="teams">
+    <projectTable :projects="projects" :teams="teams" :myTeam="myTeam" @projectRead="projectRead" @closeModal="closeModal" @projectAssignTo="projectAssignTo" @projectWithdrawFrom="projectWithdrawFrom">
       
     </projectTable>
   </main>
