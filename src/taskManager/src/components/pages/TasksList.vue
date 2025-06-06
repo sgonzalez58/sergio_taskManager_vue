@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed } from "vue"
 
-import taskItem from "./TaskItem.vue"
+import taskItem from "../tasks/TaskItem.vue"
 const tasks = ref([])
 
 let current_id = ref(1);
@@ -170,7 +170,7 @@ function closeModal() {
   color: black;
   padding: 8px 14px;
   border-radius: 3px;
-  border: 1px solid black;
+  border: 1px solid transparent;
   transition-duration: 0.3s;
 }
 

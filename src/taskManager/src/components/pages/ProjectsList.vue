@@ -1,8 +1,8 @@
 <script setup>
 import { ref, computed } from "vue"
 
-import projectTable from "./ProjectTable.vue"
-import projectItem from "./ProjectItem.vue"
+import projectTable from "../projects/ProjectTable.vue"
+import projectItem from "../projects/ProjectItem.vue"
 const projects = ref([])
 
 let current_id = ref(1);
@@ -77,7 +77,8 @@ function projectAssignTo(project) {
 }
 
 function projectWithdrawFrom(project) {
-  project.team_id = 0;
+  if(confirm("Etes vous sûr de vouloir retirer votre équipe de ce projet ?"))
+    project.team_id = 0;
 }
 </script>
 
@@ -97,9 +98,7 @@ function projectWithdrawFrom(project) {
       <div v-if="openProjectItem" class="overlay" @click="closeModal"></div>
     </Teleport>
 
-    <projectTable :projects="projects" :teams="teams" :myTeam="myTeam" @projectRead="projectRead" @closeModal="closeModal" @projectAssignTo="projectAssignTo" @projectWithdrawFrom="projectWithdrawFrom">
-      
-    </projectTable>
+    <projectTable :projects="projects" :teams="teams" :myTeam="myTeam" @projectRead="projectRead" @closeModal="closeModal" @projectAssignTo="projectAssignTo" @projectWithdrawFrom="projectWithdrawFrom"/>
   </main>
 </template>
 
@@ -116,7 +115,7 @@ function projectWithdrawFrom(project) {
   color: black;
   padding: 8px 14px;
   border-radius: 3px;
-  border: 1px solid black;
+  border: 1px solid transparent;
   transition-duration: 0.3s;
 }
 

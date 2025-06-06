@@ -6,7 +6,7 @@
   <div class="taskItemInfo">
     <div class="taskItemInfosPrincipales">
       <div class="flex-col">
-        <label for="taskLabel">Titre de la tâche</label>
+        <p>Titre de la tâche</p>
         <input id="taskLabel" :value="task?.label" placeholder="Titre de la tâche">
       </div>
       <div class="flex-col">
@@ -114,7 +114,7 @@ defineEmits(['taskUpdate', 'taskDelete', 'closeModal', 'taskCreate'])
 .taskItemInfo input, .taskItemInfo select{
   padding: 3px 6px;
   border-radius: 3px;
-  border: 1px solid black;
+  border: 0;
 }
 
 .taskItemInfosPrincipales{
