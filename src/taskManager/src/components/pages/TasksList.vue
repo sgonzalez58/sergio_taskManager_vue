@@ -10,8 +10,8 @@ fetch('http://localhost:3000/tasks')
   .then((res) => res.json())
   .then((res) => {
     tasks.value = res
-    for (const task in tasks) {
-      if (task.id > current_id) {
+    for (const task in tasks.value) {
+      if (task.id > current_id.value) {
         current_id.value = task.id + 1;
       }
     }

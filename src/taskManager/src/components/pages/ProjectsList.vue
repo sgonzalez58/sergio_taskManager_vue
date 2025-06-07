@@ -11,8 +11,8 @@ fetch('http://localhost:3000/projects')
   .then((res) => res.json())
   .then((res) => {
     projects.value = res
-    for (const project in projects) {
-      if (project.id > current_id) {
+    for (const project in projects.value) {
+      if (project.id > current_id.value) {
         current_id.value = project.id + 1;
       }
     }

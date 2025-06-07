@@ -5,12 +5,14 @@ import TasksList from "./components/pages/TasksList.vue"
 import ProjectsList from "./components/pages/ProjectsList.vue"
 import NotFound from './components/pages/NotFound.vue'
 import UsersList from "./components/pages/UsersList.vue"
+import TeamsList from "./components/pages/TeamsList.vue"
 
 const routes = {
   '/': Dashboard,
   '/tasks' : TasksList,
   '/projects': ProjectsList,
-  '/users' : UsersList
+  '/users' : UsersList,
+  '/teams' : TeamsList
 }
 
 const currentPath = ref(window.location.hash)
@@ -32,6 +34,7 @@ const currentView = computed(() => {
     <a href="#/tasks">Tasks</a>
     <a href="#/projects">Projects</a>
     <a href="#/users">Users</a>
+    <a href="#/teams">Teams</a>
   </nav>
   <component :is="currentView" />
 </template>
