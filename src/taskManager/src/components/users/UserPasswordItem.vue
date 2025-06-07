@@ -27,7 +27,6 @@
       <div class="flex-col">
         <p>Rôle de l'utisateur</p>
         <select id="userRole" v-model="formData.type">
-          <option value="dev">Développeur</option>
           <option value="manager">Manageur</option>
           <option value="admin">Admin</option>
         </select>

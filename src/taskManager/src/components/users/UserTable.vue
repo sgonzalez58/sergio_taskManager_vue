@@ -25,8 +25,9 @@
         <td :class="'role-' + user.type">
           {{ user.type }}
         </td>
-        <td>
+        <td class="update_button_group">
           <button id="userUpdate" @click="$emit('userRead', user)">Modifier l'utilisateur</button>
+          <button id="userPasswordRead" @click="$emit('userPasswordRead', user)">Changer le mot de passe</button>
         </td>
       </tr>
     </table>
@@ -47,7 +48,7 @@ defineProps({
   }
 });
 
-defineEmits(['closeModal', 'userRead'])
+defineEmits(['closeModal', 'userRead', 'userPasswordRead'])
 </script>
 
 <style scoped>
@@ -96,6 +97,13 @@ td {
   background-color: rgb(244, 246, 245);
 }
 
+.update_button_group{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
 #userUpdate{
   background-color: rgb(94, 211, 234);
   color: white;
@@ -108,5 +116,19 @@ td {
 #userUpdate:hover{
   background-color: white;
   color: rgb(5, 156, 186);
+}
+
+#userPasswordRead{
+  background-color: rgb(118, 118, 118);
+  color: white;
+  padding: 8px 14px;
+  border-radius: 3px;
+  border: 1px solid rgb(118, 118, 118);
+  transition-duration: 0.3s;
+}
+
+#userPasswordRead:hover{
+  background-color: white;
+  color: rgb(118, 118, 118);
 }
 </style>

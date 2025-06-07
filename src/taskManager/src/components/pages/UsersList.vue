@@ -28,15 +28,17 @@ fetch('http://localhost:3000/teams')
   })
   
 const openUserItem = ref(false)
+const openUserPasswordItem = ref(false)
 
 const formData = ref({})
 let currentUserOpen = ref({})
 
 function userCreate() {
-  formData.value.id = current_id.value++;
   if(formData.value.type == "admin"){
-    formData.value.team_id = null;
+    closeModal();
+    return;
   }
+  formData.value.id = current_id.value++;  
   users.value.push(formData.value)
   let user_team = teams.value.find((team) => team.id == formData.value.teamId);
   if(user_team){
@@ -47,6 +49,34 @@ function userCreate() {
     }
   }
   closeModal();
+}
+
+function userUpdate() {
+  if(formData.value.type == "admin"){
+    closeModal();
+    return;
+  }
+  currentUserOpen.value.first_name = formData.value.first_name;
+  currentUserOpen.value.last_name = formData.value.last_name;
+  currentUserOpen.value.email = formData.value.email;
+  currentUserOpen.value.type = formData.value.type;
+  let user_previous_team = teams.value.find((team) => team.managerID == currentUserOpen.value.id || team.members.includes(currentUserOpen.value.id));
+  let user_team = teams.value.find((team) => team.id == formData.value.teamId);
+  if(user_team.id != user_previous_team.id){
+    if(formData.value.type == "manager"){
+      user_team.managerID = formData.value.id;
+      user_previous_team.managerID = null;
+    }else if(formData.value.type == "dev"){
+      user_team.members.push(formData.value.id);
+      let user_previous_team_index = user_previous_team.members.find_index((member) => member == currentUserOpen.value.id);
+      user_previous_team.member.splice(user_previous_team_index, 1);
+    }
+  }
+  closeModal();
+}
+
+function userPasswordUpdate() {
+  
 }
 
 function userRead(user) {
@@ -64,8 +94,20 @@ function userRead(user) {
   openUserItem.value = true;
 }
 
+function userPasswordRead(user) {
+  formData.value = {};
+  formData.value = {
+      id: user.id,
+      first_name: user.first_name,
+      last_name: user.last_name
+    }
+  currentUserOpen.value = user;
+  openUserPasswordItem.value = true;
+}
+
 function closeModal() {
   openUserItem.value = false;
+  openUserPasswordItem.value = false;
 }
 </script>
 
@@ -79,12 +121,12 @@ function closeModal() {
 
     <Teleport to="body">
       <div v-if="openUserItem" class="modal">
-        <userItem :user="currentUserOpen" :teams="teams" :formData="formData" @closeModal="closeModal" @userCreate="userCreate"/>
+        <userItem :user="currentUserOpen" :teams="teams" :formData="formData" @closeModal="closeModal" @userCreate="userCreate" @userUpdate="userUpdate"/>
       </div>
       <div v-if="openUserItem" class="overlay" @click="closeModal"></div>
     </Teleport>
 
-    <userTable :users="users" :teams="teams" @userRead="userRead" @closeModal="closeModal"/>
+    <userTable :users="users" :teams="teams" @userRead="userRead" @closeModal="closeModal" @userPasswordRead="userPasswordRead"/>
   </main>
 </template>
 
@@ -123,7 +165,7 @@ function closeModal() {
 }
 
 .overlay {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
