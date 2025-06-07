@@ -1,9 +1,9 @@
 <script setup>
 import { ref } from "vue"
 
-import userTable from "../users/UserTable.vue"
-import userItem from "../users/UserItem.vue"
-import userPasswordItem from "../users/UserPasswordItem.vue"
+import userTable from "../components/users/UserTable.vue"
+import userItem from "../components/users/UserItem.vue"
+import userPasswordItem from "../components/users/UserPasswordItem.vue"
 
 const users = ref([])
 
@@ -14,7 +14,7 @@ fetch('http://localhost:3000/users')
   .then((res) => {
     users.value = res
     for (const user of users.value) {
-      if (user.id > current_id.value) {
+      if (user.id >= current_id.value) {
         current_id.value = user.id + 1;
       }
     }

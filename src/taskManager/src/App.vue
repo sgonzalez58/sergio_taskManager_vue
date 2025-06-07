@@ -1,11 +1,11 @@
 <script setup>
 import { ref, computed } from "vue"
-import Dashboard from "./components/pages/Dashboard.vue"
-import TasksList from "./components/pages/TasksList.vue"
-import ProjectsList from "./components/pages/ProjectsList.vue"
-import NotFound from './components/pages/NotFound.vue'
-import UsersList from "./components/pages/UsersList.vue"
-import TeamsList from "./components/pages/TeamsList.vue"
+import Dashboard from "./pages/Dashboard.vue"
+import TasksList from "./pages/TasksList.vue"
+import ProjectsList from "./pages/ProjectsList.vue"
+import NotFound from './pages/NotFound.vue'
+import UsersList from "./pages/UsersList.vue"
+import TeamsList from "./pages/TeamsList.vue"
 
 const routes = {
   '/': Dashboard,

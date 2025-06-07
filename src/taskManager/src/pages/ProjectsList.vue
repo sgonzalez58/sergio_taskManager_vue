@@ -1,8 +1,8 @@
 <script setup>
 import { ref, computed } from "vue"
 
-import projectTable from "../projects/ProjectTable.vue"
-import projectItem from "../projects/ProjectItem.vue"
+import projectTable from "../components/projects/ProjectTable.vue"
+import projectItem from "../components/projects/ProjectItem.vue"
 const projects = ref([])
 
 let current_id = ref(1);
@@ -11,8 +11,8 @@ fetch('http://localhost:3000/projects')
   .then((res) => res.json())
   .then((res) => {
     projects.value = res
-    for (const project in projects.value) {
-      if (project.id > current_id.value) {
+    for (const project of projects.value) {
+      if (project.id >= current_id.value) {
         current_id.value = project.id + 1;
       }
     }

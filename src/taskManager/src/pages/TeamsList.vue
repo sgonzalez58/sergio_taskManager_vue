@@ -1,8 +1,8 @@
 <script setup>
 import { ref } from "vue"
 
-import teamTable from "../teams/TeamTable.vue"
-import teamItem from "../teams/TeamItem.vue"
+import teamTable from "../components/teams/TeamTable.vue"
+import teamItem from "../components/teams/TeamItem.vue"
 
 const teams = ref([])
 
@@ -13,7 +13,7 @@ fetch('http://localhost:3000/teams')
   .then((res) => {
     teams.value = res
     for (const team of teams.value) {
-      if (team.id > current_id.value) {
+      if (team.id >= current_id.value) {
         current_id.value = team.id + 1;
       }
     }

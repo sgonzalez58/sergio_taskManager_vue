@@ -1,21 +1,21 @@
 <template>
   <div class="taskItemHeader">
-    {{ task?.id ? "Modification de tâche" : "Création d'une tâche" }}
+    {{ formData?.id ? "Modification de tâche" : "Création d'une tâche" }}
     <button id='closeModal' v-on:click="$emit('closeModal')">X</button>
   </div>
-  <div class="taskItemInfo">
+  <form class="taskItemInfo">
     <div class="taskItemInfosPrincipales">
       <div class="flex-col">
         <p>Titre de la tâche</p>
-        <input id="taskLabel" :value="task?.label" placeholder="Titre de la tâche">
+        <input id="taskLabel" v-model="formData.label" placeholder="Titre de la tâche">
       </div>
       <div class="flex-col">
         <p>Temps estimé de travail : {{ task?.estimatedTime }} jours</p>
-        <input id="taskEstimatedTime" placeholder="modifier le temps estimé" :value="task?.estimatedTime" />
+        <input id="taskEstimatedTime" placeholder="modifier le temps estimé" v-model="formData.estimatedTime" />
       </div>
       <div class="flex-col">
         <p>Etat de la tâche</p>
-        <select id="taskStep" :value="task?.step">
+        <select id="taskStep" v-model="formData.step">
           <option value="0">Backlog</option>
           <option value="1">Todo</option>
           <option value="2">InProgress</option>
@@ -27,18 +27,18 @@
     <div class="taskItemInfosEquipe">
       <div class="flex-col">
         <p>Projet associé</p>
-        <select id="taskProjet" :value="task?.projectID">
+        <select id="taskProjet" v-model="formData.projectID">
           <option v-for="projet in projets" :key="projet.id" :value="projet.id">{{ projet.project_name }}</option>
         </select>
       </div>
       <div class="flex-col">
         <p>Développeur assigné à la tâche</p>
-        <select id="taskDev" :value="task?.assignedTo">
+        <select id="taskDev" v-model="formData.assignedTo">
           <option v-for="dev in devs" :key="dev.id" :value="dev.id">{{ dev.first_name + ' ' + dev.last_name }}</option>
         </select>
       </div>
     </div>
-  </div>
+  </form>
   <div class="taskItemActions">
     <button v-if="!task" id='confirmTaskUpdate' v-on:click="$emit('taskCreate', task)">Ajouter la tâche</button>
     <button v-if="task" id='confirmTaskUpdate' v-on:click="$emit('taskUpdate', task)">Confirmer les modifications</button>
@@ -63,13 +63,12 @@ fetch('http://localhost:3000/users')
 
 
 defineProps({
+  formData:{
+    type: Object,
+    required: true
+  },
   task: {
-    id: Number,
-    label: String,
-    step: Number,
-    projectID: Number,
-    estimatedTime: Number,
-    assignedTo: Number,
+    type: Object
   }
 });
 
