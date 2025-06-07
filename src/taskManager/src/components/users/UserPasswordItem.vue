@@ -1,49 +1,22 @@
 <template>
   <div class="userItemHeader">
-    {{ formData?.id ? "Modification d'un utilisateur" : "Création d'un utilisateur" }} 
+    Modification du mot de passe de l'utilisateur
     <button id='closeModal' v-on:click="$emit('closeModal')">X</button>
   </div>
-  <div class="userItemInfo">
+  <form class="userItemInfo">
     <div class="userItemInfosPrincipales">
       <div class="flex-col">
-        <p>Prénom de l'utilisateur</p>
-        <input id="userFirstName" v-model="formData.first_name" placeholder="Prénom de l'utisateur">
+        <p>Nouveau mot de passe de l'utilisateur</p>
+        <input type="password" id="userPassword" v-model="formData.password" autocomplete="new-password"/>
       </div>
       <div class="flex-col">
-        <p>Nom de l'utilisateur</p>
-        <input id="userLastName" v-model="formData.last_name" placeholder="Nom de l'utisateur">
-      </div>
-      <div class="flex-col">
-        <p>Email de l'utilisateur</p>
-        <input type="email" id="userEmail" v-model="formData.email" placeholder="Email de l'utisateur">
-      </div>
-      <div class="flex-col" v-if="!formData.id">
-        <p>Mot de passe de l'utilisateur</p>
-        <input type="password" id="userPassword" v-model="formData.password" placeholder="Email de l'utisateur">
-      </div>
-      
+        <p>Répétez le mot de passe</p>
+        <input type="password" id="userPasswordRepeat" v-model="formData.passwordRepeat" autocomplete="new-password"/>
+      </div>      
     </div>
-    <div class="userItemInfosEquipe">
-      <div class="flex-col">
-        <p>Rôle de l'utisateur</p>
-        <select id="userRole" v-model="formData.type">
-          <option value="manager">Manageur</option>
-          <option value="admin">Admin</option>
-        </select>
-      </div>
-      <div class="flex-col">
-        <p>Equipe assigné</p>
-        <select id="userTeam" v-model="formData.teamId">
-          <option value="0">No team assigned</option>
-          <option v-for="team in teams" :key="team.id" :value="team.id">{{ team.name }}</option>
-        </select>
-      </div>
-    </div>
-  </div>
+  </form>
   <div class="userItemActions">
-    <button v-if="!user" id='confirmuserUpdate' v-on:click="$emit('userCreate')">Créer l'utilisateur</button>
-    <button v-if="user" id='confirmuserUpdate' v-on:click="$emit('userUpdate')">Confirmer les modifications</button>
-    <button v-if="user" id='deleteuser' v-on:click="$emit('userDelete')">Supprimer l'utilisateur</button>
+    <button v-if="user" id='confirmUserUpdate' v-on:click="$emit('userPasswordUpdate')">Confirmer les modifications</button>
   </div>
 </template>
 
@@ -57,24 +30,10 @@ const props = defineProps({
   },
   user: {
     type: Object
-  },
-  teams : {
-    type: Array,
-    required: true
   }
 });
 
-props.formData.teamId = findTeam(props.formData.id)
-
-function findTeam(user_id){
-  const team = props.teams.find((team) => team.managerID == user_id || team.members.includes(user_id));
-  if(team){
-    return team.id;
-  }
-  return 0;
-}
-
-defineEmits(['userUpdate', 'userDelete', 'closeModal', 'userCreate'])
+defineEmits(['userPasswordUpdate', 'closeModal'])
 </script>
 
 <style>
@@ -119,7 +78,7 @@ defineEmits(['userUpdate', 'userDelete', 'closeModal', 'userCreate'])
 }
 
 .userItemInfosPrincipales{
-  width: 70%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: baseline;
@@ -132,16 +91,6 @@ defineEmits(['userUpdate', 'userDelete', 'closeModal', 'userCreate'])
   flex-direction: column;
 }
 
-.userItemInfosEquipe{
-  width: 30%;
-  padding-left: 30px;
-  display: flex;
-  flex-direction: column;
-  align-items: baseline;
-  box-sizing: content-box;
-  gap: 10px;
-}
-
 .userItemActions{
   display: flex;
   gap: 10px;
@@ -152,7 +101,7 @@ defineEmits(['userUpdate', 'userDelete', 'closeModal', 'userCreate'])
   flex-wrap: wrap;
 }
 
-#confirmuserUpdate{
+#confirmUserUpdate{
   background-color: rgb(94, 211, 234);
   color: white;
   padding: 8px 14px;
@@ -161,22 +110,8 @@ defineEmits(['userUpdate', 'userDelete', 'closeModal', 'userCreate'])
   transition-duration: 0.3s;
 }
 
-#confirmuserUpdate:hover{
+#confirmUserUpdate:hover{
   background-color: white;
   color: rgb(5, 156, 186);
-}
-
-#deleteuser{
-  background-color: rgb(241, 63, 63);
-  color: white;
-  padding: 8px 14px;
-  border-radius: 3px;
-  border: 1px solid rgb(241, 63, 63);
-  transition-duration: 0.3s;
-}
-
-#deleteuser:hover{
-  background-color: white;
-  color: rgb(241, 63, 63);
 }
 </style>

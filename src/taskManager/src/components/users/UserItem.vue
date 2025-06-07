@@ -3,7 +3,7 @@
     {{ formData?.id ? "Modification d'un utilisateur" : "Création d'un utilisateur" }} 
     <button id='closeModal' v-on:click="$emit('closeModal')">X</button>
   </div>
-  <div class="userItemInfo">
+  <form class="userItemInfo">
     <div class="userItemInfosPrincipales">
       <div class="flex-col">
         <p>Prénom de l'utilisateur</p>
@@ -40,7 +40,7 @@
         </select>
       </div>
     </div>
-  </div>
+  </form>
   <div class="userItemActions">
     <button v-if="!user" id='confirmuserUpdate' v-on:click="$emit('userCreate')">Créer l'utilisateur</button>
     <button v-if="user" id='confirmuserUpdate' v-on:click="$emit('userUpdate')">Confirmer les modifications</button>

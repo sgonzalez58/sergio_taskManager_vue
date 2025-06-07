@@ -3,6 +3,7 @@ import { ref } from "vue"
 
 import userTable from "../users/UserTable.vue"
 import userItem from "../users/UserItem.vue"
+import userPasswordItem from "../users/UserPasswordItem.vue"
 
 const users = ref([])
 
@@ -53,8 +54,7 @@ function userCreate() {
 
 function userUpdate() {
   if(formData.value.type == "admin"){
-    closeModal();
-    return;
+    formData.value.teamId = 0;
   }
   currentUserOpen.value.first_name = formData.value.first_name;
   currentUserOpen.value.last_name = formData.value.last_name;
@@ -76,7 +76,11 @@ function userUpdate() {
 }
 
 function userPasswordUpdate() {
-  
+  if(formData.value.password != formData.value.passwordRepeat || !confirm("Êtes-vous sûr de vouloir changer le mot de passe ?")){
+    return;
+  }
+  currentUserOpen.value.password = formData.value.password;
+  closeModal();
 }
 
 function userRead(user) {
@@ -123,7 +127,10 @@ function closeModal() {
       <div v-if="openUserItem" class="modal">
         <userItem :user="currentUserOpen" :teams="teams" :formData="formData" @closeModal="closeModal" @userCreate="userCreate" @userUpdate="userUpdate"/>
       </div>
-      <div v-if="openUserItem" class="overlay" @click="closeModal"></div>
+      <div v-if="openUserPasswordItem" class="modal">
+        <userPasswordItem :user="currentUserOpen" :formData="formData" @closeModal="closeModal" @userPasswordUpdate="userPasswordUpdate"/>
+      </div>
+      <div v-if="openUserItem || openUserPasswordItem" class="overlay" @click="closeModal"></div>
     </Teleport>
 
     <userTable :users="users" :teams="teams" @userRead="userRead" @closeModal="closeModal" @userPasswordRead="userPasswordRead"/>
