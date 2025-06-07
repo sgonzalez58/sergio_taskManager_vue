@@ -26,7 +26,7 @@
           {{users.filter((user) => team.members.includes(user.id)).length}}
         </td>
         <td class="update_button_group">
-          <button id="teamUpdate" @click="$emit('userRead', team)">Modifier l'équipe</button>
+          <button id="teamUpdate" @click="$emit('teamRead', team)">Modifier l'équipe</button>
         </td>
       </tr>
     </table>

@@ -1,50 +1,33 @@
 <template>
-  <div class="userItemHeader">
-    {{ formData?.id ? "Modification d'un utilisateur" : "Création d'un utilisateur" }} 
+  <div class="teamItemHeader">
+    {{ formData?.id ? "Modification d'une équipe" : "Création d'une équipe" }} 
     <button id='closeModal' v-on:click="$emit('closeModal')">X</button>
   </div>
-  <form class="userItemInfo">
-    <div class="userItemInfosPrincipales">
+  <form class="teamItemInfo">
+    <div class="teamItemInfosPrincipales">
       <div class="flex-col">
-        <p>Prénom de l'utilisateur</p>
-        <input id="userFirstName" v-model="formData.first_name" placeholder="Prénom de l'utisateur">
+        <p>Nom de l'équipe</p>
+        <input id="teamFirstName" v-model="formData.name" placeholder="Nom de l'équipe">
       </div>
       <div class="flex-col">
-        <p>Nom de l'utilisateur</p>
-        <input id="userLastName" v-model="formData.last_name" placeholder="Nom de l'utisateur">
-      </div>
-      <div class="flex-col">
-        <p>Email de l'utilisateur</p>
-        <input type="email" id="userEmail" v-model="formData.email" placeholder="Email de l'utisateur">
-      </div>
-      <div class="flex-col" v-if="!formData.id">
-        <p>Mot de passe de l'utilisateur</p>
-        <input type="password" id="userPassword" v-model="formData.password" placeholder="Email de l'utisateur">
-      </div>
-      
-    </div>
-    <div class="userItemInfosEquipe">
-      <div class="flex-col">
-        <p>Rôle de l'utisateur</p>
-        <select id="userRole" v-model="formData.type">
-          <option value="dev">Développeur</option>
-          <option value="manager">Manageur</option>
-          <option value="admin">Admin</option>
+        <p>Manager de l'équipe</p>
+        <select id="teamManager" v-model="formData.managerID">
+          <option value="0">No manager assigned</option>
+          <option v-for="user in findFreeManagers(team?.managerID)" :key="user.id" :value="user.id">{{ user.first_name + ' ' + user.last_name }}</option>
         </select>
       </div>
       <div class="flex-col">
-        <p>Equipe assigné</p>
-        <select id="userTeam" v-model="formData.teamId">
-          <option value="0">No team assigned</option>
-          <option v-for="team in teams" :key="team.id" :value="team.id">{{ team.name }}</option>
+        <p>Developpeurs de l'équipe</p>
+        <select id="userTeam" v-model="formData.members" multiple>
+          <option v-for="user in findFreeDeveloppers(team?.members)" :key="user.id" :value="user.id">{{ user.first_name + ' ' + user.last_name }}</option>
         </select>
       </div>
     </div>
   </form>
-  <div class="userItemActions">
-    <button v-if="!user" id='confirmuserUpdate' v-on:click="$emit('userCreate')">Créer l'utilisateur</button>
-    <button v-if="user" id='confirmuserUpdate' v-on:click="$emit('userUpdate')">Confirmer les modifications</button>
-    <button v-if="user" id='deleteuser' v-on:click="$emit('userDelete')">Supprimer l'utilisateur</button>
+  <div class="teamItemActions">
+    <button v-if="!team" id='confirmteamUpdate' v-on:click="$emit('teamCreate')">Créer l'utilisateur</button>
+    <button v-if="team" id='confirmteamUpdate' v-on:click="$emit('teamUpdate')">Confirmer les modifications</button>
+    <button v-if="team" id='deleteteam' v-on:click="$emit('teamDelete')">Supprimer l'utilisateur</button>
   </div>
 </template>
 
@@ -56,29 +39,44 @@ const props = defineProps({
     type: Object,
     required: true
   },
-  user: {
+  team: {
     type: Object
   },
-  teams : {
+  users : {
     type: Array,
     required: true
+  },
+  teams : {
+    type : Array,
+    required : true
   }
 });
 
-props.formData.teamId = findTeam(props.formData.id)
-
-function findTeam(user_id){
-  const team = props.teams.find((team) => team.managerID == user_id || team.members.includes(user_id));
-  if(team){
-    return team.id;
+function findFreeManagers(manager_id){
+  let managers_already_taken = props.teams.map((team) => team.managerID);
+  console.log(managers_already_taken, manager_id)
+  if(manager_id){
+    managers_already_taken = managers_already_taken.filter((managerId) => managerId != manager_id);
+    console.log(managers_already_taken);
   }
-  return 0;
+  return props.users.filter((user) => user.type == "manager" && !managers_already_taken.includes(user.id));
 }
 
-defineEmits(['userUpdate', 'userDelete', 'closeModal', 'userCreate'])
+function findFreeDeveloppers(members){
+  const developers_already_taken_array = props.teams.map((team) => team.members);
+  let developers_already_taken = developers_already_taken_array.flat(1);
+  console.log(developers_already_taken)
+  if(members){
+    developers_already_taken = developers_already_taken.filter((developerId) => !members.includes(developerId));
+    console.log(developers_already_taken)
+  }
+  return props.users.filter((user) => user.type == "dev" && !developers_already_taken.includes(user.id));
+}
+
+defineEmits(['teamUpdate', 'teamDelete', 'closeModal', 'teamCreate'])
 </script>
 
-<style>
+<style scoped>
 #closeModal{
   position: absolute;
   right: 10px;
@@ -96,7 +94,7 @@ defineEmits(['userUpdate', 'userDelete', 'closeModal', 'userCreate'])
   color: white;
 }
 
-.userItemHeader{
+.teamItemHeader{
   text-align: center;
   background-color: rgb(72, 188, 211);
   color: black;
@@ -105,7 +103,7 @@ defineEmits(['userUpdate', 'userDelete', 'closeModal', 'userCreate'])
   border: 2px solid rgb(72, 188, 211);
 }
 
-.userItemInfo{
+.teamItemInfo{
   display: flex;
   align-items: baseline;
   padding: 18px;
@@ -113,19 +111,18 @@ defineEmits(['userUpdate', 'userDelete', 'closeModal', 'userCreate'])
   color: black;
 }
 
-.userItemInfo input, .userItemInfo select{
+.teamItemInfo input, .teamItemInfo select{
   padding: 3px 6px;
   border-radius: 3px;
   border: 1px solid black;
 }
 
-.userItemInfosPrincipales{
-  width: 70%;
+.teamItemInfosPrincipales{
+  width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: baseline;
+  align-items: center;
   gap: 10px;
-  border-right: 1px solid black;
 }
 
 .flex-col{
@@ -133,17 +130,7 @@ defineEmits(['userUpdate', 'userDelete', 'closeModal', 'userCreate'])
   flex-direction: column;
 }
 
-.userItemInfosEquipe{
-  width: 30%;
-  padding-left: 30px;
-  display: flex;
-  flex-direction: column;
-  align-items: baseline;
-  box-sizing: content-box;
-  gap: 10px;
-}
-
-.userItemActions{
+.teamItemActions{
   display: flex;
   gap: 10px;
   justify-content: center;
@@ -153,7 +140,7 @@ defineEmits(['userUpdate', 'userDelete', 'closeModal', 'userCreate'])
   flex-wrap: wrap;
 }
 
-#confirmuserUpdate{
+#confirmteamUpdate{
   background-color: rgb(94, 211, 234);
   color: white;
   padding: 8px 14px;
@@ -162,12 +149,12 @@ defineEmits(['userUpdate', 'userDelete', 'closeModal', 'userCreate'])
   transition-duration: 0.3s;
 }
 
-#confirmuserUpdate:hover{
+#confirmteamUpdate:hover{
   background-color: white;
   color: rgb(5, 156, 186);
 }
 
-#deleteuser{
+#deleteteam{
   background-color: rgb(241, 63, 63);
   color: white;
   padding: 8px 14px;
@@ -176,7 +163,7 @@ defineEmits(['userUpdate', 'userDelete', 'closeModal', 'userCreate'])
   transition-duration: 0.3s;
 }
 
-#deleteuser:hover{
+#deleteteam:hover{
   background-color: white;
   color: rgb(241, 63, 63);
 }

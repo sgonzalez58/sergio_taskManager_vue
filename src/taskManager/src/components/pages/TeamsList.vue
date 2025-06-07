@@ -74,7 +74,7 @@ function closeModal() {
 
     <Teleport to="body">
       <div v-if="openTeamItem" class="modal">
-        <teamItem :team="currenTeamOpen" :users="users" :formData="formData" @closeModal="closeModal" @teamCreate="teamCreate" @teamUpdate="teamUpdate"/>
+        <teamItem :team="currenTeamOpen" :users="users" :formData="formData" :teams="teams" @closeModal="closeModal" @teamCreate="teamCreate" @teamUpdate="teamUpdate"/>
       </div>
       <div v-if="openTeamItem" class="overlay" @click="closeModal"></div>
     </Teleport>

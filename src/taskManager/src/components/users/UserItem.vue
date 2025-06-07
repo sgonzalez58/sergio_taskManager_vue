@@ -7,25 +7,25 @@
     <div class="userItemInfosPrincipales">
       <div class="flex-col">
         <p>Prénom de l'utilisateur</p>
-        <input id="userFirstName" v-model="formData.first_name" placeholder="Prénom de l'utisateur">
+        <input id="userFirstName" v-model="formData.first_name" placeholder="Prénom de l'utilisateur">
       </div>
       <div class="flex-col">
         <p>Nom de l'utilisateur</p>
-        <input id="userLastName" v-model="formData.last_name" placeholder="Nom de l'utisateur">
+        <input id="userLastName" v-model="formData.last_name" placeholder="Nom de l'utilisateur">
       </div>
       <div class="flex-col">
         <p>Email de l'utilisateur</p>
-        <input type="email" id="userEmail" v-model="formData.email" placeholder="Email de l'utisateur">
+        <input type="email" id="userEmail" v-model="formData.email" placeholder="Email de l'utilisateur">
       </div>
       <div class="flex-col" v-if="!formData.id">
         <p>Mot de passe de l'utilisateur</p>
-        <input type="password" id="userPassword" v-model="formData.password" placeholder="Email de l'utisateur">
+        <input type="password" id="userPassword" v-model="formData.password" placeholder="Email de l'utilisateur">
       </div>
       
     </div>
     <div class="userItemInfosEquipe">
       <div class="flex-col">
-        <p>Rôle de l'utisateur</p>
+        <p>Rôle de l'utilisateur</p>
         <select id="userRole" v-model="formData.type">
           <option value="dev">Développeur</option>
           <option value="manager">Manageur</option>
@@ -78,7 +78,7 @@ function findTeam(user_id){
 defineEmits(['userUpdate', 'userDelete', 'closeModal', 'userCreate'])
 </script>
 
-<style>
+<style scoped>
 #closeModal{
   position: absolute;
   right: 10px;

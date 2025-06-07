@@ -36,7 +36,7 @@ const props = defineProps({
 defineEmits(['userPasswordUpdate', 'closeModal'])
 </script>
 
-<style>
+<style scoped>
 #closeModal{
   position: absolute;
   right: 10px;
@@ -81,9 +81,8 @@ defineEmits(['userPasswordUpdate', 'closeModal'])
   width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: baseline;
+  align-items: center;
   gap: 10px;
-  border-right: 1px solid black;
 }
 
 .flex-col{

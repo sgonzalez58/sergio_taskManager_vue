@@ -68,8 +68,9 @@ function userUpdate() {
       user_previous_team.managerID = null;
     }else if(formData.value.type == "dev"){
       user_team.members.push(formData.value.id);
-      let user_previous_team_index = user_previous_team.members.find_index((member) => member == currentUserOpen.value.id);
-      user_previous_team.member.splice(user_previous_team_index, 1);
+      let user_previous_team_index = user_previous_team.members.findIndex((member) => member == currentUserOpen.value.id);
+      user_previous_team.members.splice(user_previous_team_index, 1);
+      console.log(currentUserOpen.value.id, user_previous_team)
     }
   }
   closeModal();
