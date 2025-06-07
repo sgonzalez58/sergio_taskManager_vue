@@ -29,7 +29,7 @@
       </div>
       <div class="flex-col">
         <p>Equipe assigné</p>
-        <select id="userTeam" :value="findTeam(formData.id)">
+        <select id="userTeam" v-model="formData.teamId" :value="findTeam(formData.id)">
           <option value="0">No team assigned</option>
           <option v-for="team in teams" :key="team.id" :value="team.id">{{ team.name }}</option>
         </select>

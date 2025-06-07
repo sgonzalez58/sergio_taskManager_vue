@@ -34,8 +34,18 @@ let currentUserOpen = ref({})
 
 function userCreate() {
   formData.value.id = current_id.value++;
+  if(formData.value.type == "admin"){
+    formData.value.team_id = null;
+  }
   users.value.push(formData.value)
-  console.log(currentUserOpen.value, formData.value, users, current_id)
+  let user_team = teams.value.find((team) => team.id == formData.value.teamId);
+  if(user_team){
+    if(formData.value.type == "manager"){
+      user_team.managerID = formData.value.id;
+    }else if(formData.value.type == "dev"){
+      user_team.members.push(formData.value.id);
+    }
+  }
   closeModal();
 }
 
