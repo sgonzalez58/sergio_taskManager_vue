@@ -5,6 +5,7 @@ export const useUserStore = defineStore('user', {
     users: undefined,
     currentId: 1,
     user: undefined,
+    accessToken: undefined
   }),
   getters: {
     getUserById: (state) => {
@@ -20,7 +21,7 @@ export const useUserStore = defineStore('user', {
       return state.user
     },
     isLoggedIn: (state) => {
-      return state.user != undefined
+      return state.user != undefined && state.accessToken != undefined
     }
   },
   actions: {
@@ -50,12 +51,12 @@ export const useUserStore = defineStore('user', {
           })
         })
           .then((res) => res.json())
-          .then((res) => { this.user = res })
+          .then((res) => this.$patch((state) => {state.user = res.user; state.accessToken = res.accessToken }))
       } catch (error) {
         console.log(error)
       }
     },
-    async adduser(user) {
+    async addUser(user) {
       try {
         return await fetch("http://localhost:3000/users", {
           method: 'POST',
@@ -70,21 +71,42 @@ export const useUserStore = defineStore('user', {
         console.log(error)
       }
     },
-    async updateuser(user) {
+    async updateInfoUser(user) {
       try {
         return await fetch("http://localhost:3000/users/" + user.id, {
-          method: 'PUT',
+          method: 'PATCH',
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(user)
+          body: JSON.stringify({
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "email": user.email,
+            "type": user.type
+          })
         })
       } catch (error) {
         console.log(error)
       }
     },
-    async deleteuser(id) {
+    async updatePasswordUser(user) {
+      try {
+        return await fetch("http://localhost:3000/users/" + user.id, {
+          method: 'PATCH',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            "password": user.password
+          })
+        })
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async deleteUser(id) {
       try {
         return await fetch("http://localhost:3000/users/" + id, {
           method: 'DELETE'

@@ -14,7 +14,7 @@ const routes = [
   { path: '/', name: 'DashBoard', component: Dashboard, meta: { requiredAuth : true } },
   { path: '/tasks', name: 'TasksList', component: TasksList, meta: { requiredAuth : true }  },
   { path: '/projects', name: 'ProjectsList', component: ProjectsList, meta: { requiredAuth : true }  },
-  { path: '/users', name: 'UsersList', component: UsersList  },
+  { path: '/users', name: 'UsersList', component: UsersList, meta: { requiredAuth : true }  },
   { path: '/teams', name: 'TeamsList', component: TeamsList, meta: { requiredAuth : true }  },
   { path: '/login', name: 'Login', component: Login, beforeEnter: async (to) => {
     const userStore = useUserStore();

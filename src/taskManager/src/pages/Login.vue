@@ -1,14 +1,25 @@
 <script setup>
+import { storeToRefs } from "pinia";
 import { useUserStore } from "@/stores/user"
-import { ref } from "vue";
+import { ref, watch } from "vue";
+import { useRouter } from "vue-router";
 
 const userStore = useUserStore();
+const { isLoggedIn } = storeToRefs(userStore)
+
+const router = useRouter()
 
 const formData = ref({})
 
 function submitForm() {
   userStore.loginUser(formData.value.email, formData.value.password)
 }
+
+watch(isLoggedIn, async(newAuthStatus) => {
+  if(newAuthStatus){
+    return router.push('/');
+  }
+}, {deep: true})
 
 </script>
 
@@ -23,7 +34,7 @@ function submitForm() {
       </div>
       <div class="flex-col">
         <label for="loginPassword">Mot de passe:</label>
-        <input id="loginPassword" v-model="formData.password">
+        <input type="password" id="loginPassword" v-model="formData.password">
       </div>
       <input type="submit">
     </form>

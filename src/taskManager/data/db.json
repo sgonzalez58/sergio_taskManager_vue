@@ -159,6 +159,15 @@
       "email": "mstrippj@reddit.com",
       "password": "$2a$10$kIUzDU5xUpRY5dQ5mZAxFuRLFG4wrD6kFL4zo2q802LF7oGGOyVy6",
       "type": "dev"
+    },
+    {
+      "email": "d.chile58@live.fr",
+      "password": "$2a$10$HvI7cP8iMpFc1nEt7Wz.fO8o4JK11sp679dSM7o.Zh.od5MG2Dv4S",
+      "teamId": 0,
+      "first_name": "Sergio",
+      "last_name": "Gonzalez",
+      "type": "admin",
+      "id": 21
     }
   ],
   "teams": [

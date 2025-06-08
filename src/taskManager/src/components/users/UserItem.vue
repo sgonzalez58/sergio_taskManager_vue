@@ -43,7 +43,7 @@
   </form>
   <div class="userItemActions">
     <button v-if="!user" id='confirmuserUpdate' v-on:click="$emit('userCreate')">Créer l'utilisateur</button>
-    <button v-if="user" id='confirmuserUpdate' v-on:click="$emit('userUpdate')">Confirmer les modifications</button>
+    <button v-if="user" id='confirmuserUpdate' v-on:click="$emit('userInfoUpdate')">Confirmer les modifications</button>
     <button v-if="user" id='deleteuser' v-on:click="$emit('userDelete')">Supprimer l'utilisateur</button>
   </div>
 </template>
@@ -75,7 +75,7 @@ function findTeam(user_id){
   return 0;
 }
 
-defineEmits(['userUpdate', 'userDelete', 'closeModal', 'userCreate'])
+defineEmits(['userInfoUpdate', 'userDelete', 'closeModal', 'userCreate'])
 </script>
 
 <style scoped>

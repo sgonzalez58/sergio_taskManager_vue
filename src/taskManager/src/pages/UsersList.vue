@@ -1,24 +1,23 @@
 <script setup>
-import { ref } from "vue"
+import { ref, onMounted } from "vue"
+import { useUserStore } from "@/stores/user"
 
 import userTable from "../components/users/UserTable.vue"
 import userItem from "../components/users/UserItem.vue"
 import userPasswordItem from "../components/users/UserPasswordItem.vue"
 
+const userStore = useUserStore();
+
 const users = ref([])
+const current_id = ref(1);
 
-let current_id = ref(1);
-
-fetch('http://localhost:3000/users')
-  .then((res) => res.json())
-  .then((res) => {
-    users.value = res
-    for (const user of users.value) {
-      if (user.id >= current_id.value) {
-        current_id.value = user.id + 1;
-      }
-    }
-  })
+onMounted(async () =>{
+  if(userStore.getUsers === undefined){
+    await userStore.fetchData();
+  }
+  users.value = userStore.getUsers;
+  current_id.value = userStore.getCurrentId;
+})
 
 const teams = ref([]);
 
@@ -36,11 +35,10 @@ let currentUserOpen = ref({})
 
 function userCreate() {
   if(formData.value.type == "admin"){
-    closeModal();
-    return;
+    formData.value.teamId = null;
   }
   formData.value.id = current_id.value++;  
-  users.value.push(formData.value)
+  userStore.addUser(formData.value);
   let user_team = teams.value.find((team) => team.id == formData.value.teamId);
   if(user_team){
     if(formData.value.type == "manager"){
@@ -52,17 +50,18 @@ function userCreate() {
   closeModal();
 }
 
-function userUpdate() {
+function userInfoUpdate() {
   if(formData.value.type == "admin"){
-    formData.value.teamId = 0;
+    formData.value.teamId = null;
   }
   currentUserOpen.value.first_name = formData.value.first_name;
   currentUserOpen.value.last_name = formData.value.last_name;
   currentUserOpen.value.email = formData.value.email;
   currentUserOpen.value.type = formData.value.type;
+  userStore.updateInfoUser(currentUserOpen.value)
   let user_previous_team = teams.value.find((team) => team.managerID == currentUserOpen.value.id || team.members.includes(currentUserOpen.value.id));
   let user_team = teams.value.find((team) => team.id == formData.value.teamId);
-  if(user_team.id != user_previous_team.id){
+  if(user_team?.id != user_previous_team?.id){
     if(formData.value.type == "manager"){
       user_team.managerID = formData.value.id;
       user_previous_team.managerID = null;
@@ -81,6 +80,7 @@ function userPasswordUpdate() {
     return;
   }
   currentUserOpen.value.password = formData.value.password;
+  userStore.updatePasswordUser(currentUserOpen.value)
   closeModal();
 }
 
@@ -126,7 +126,7 @@ function closeModal() {
 
     <Teleport to="body">
       <div v-if="openUserItem" class="modal">
-        <userItem :user="currentUserOpen" :teams="teams" :formData="formData" @closeModal="closeModal" @userCreate="userCreate" @userUpdate="userUpdate"/>
+        <userItem :user="currentUserOpen" :teams="teams" :formData="formData" @closeModal="closeModal" @userCreate="userCreate" @userInfoUpdate="userInfoUpdate"/>
       </div>
       <div v-if="openUserPasswordItem" class="modal">
         <userPasswordItem :user="currentUserOpen" :formData="formData" @closeModal="closeModal" @userPasswordUpdate="userPasswordUpdate"/>
