@@ -1,42 +1,18 @@
 <script setup>
-import { ref, computed } from "vue"
-import Dashboard from "./pages/Dashboard.vue"
-import TasksList from "./pages/TasksList.vue"
-import ProjectsList from "./pages/ProjectsList.vue"
-import NotFound from './pages/NotFound.vue'
-import UsersList from "./pages/UsersList.vue"
-import TeamsList from "./pages/TeamsList.vue"
-
-const routes = {
-  '/': Dashboard,
-  '/tasks' : TasksList,
-  '/projects': ProjectsList,
-  '/users' : UsersList,
-  '/teams' : TeamsList
-}
-
-const currentPath = ref(window.location.hash)
-
-window.addEventListener('hashchange', () => {
-  currentPath.value = window.location.hash
-})
-
-const currentView = computed(() => {
-  return routes[currentPath.value.slice(1) || '/'] || NotFound
-})
+import { RouterLink } from "vue-router"
 </script>
 
 <template>
   <nav>
-    <a href="#/">
+    <RouterLink to="/">
       <img src="./assets/logo.png" height="80px" alt="logo taskManager"/>
-    </a>
-    <a href="#/tasks">Tasks</a>
-    <a href="#/projects">Projects</a>
-    <a href="#/users">Users</a>
-    <a href="#/teams">Teams</a>
+    </RouterLink>
+    <RouterLink to="/tasks">Tasks</RouterLink>
+    <RouterLink to="/projects">Projects</RouterLink>
+    <RouterLink to="/users">Users</RouterLink>
+    <RouterLink to="/teams">Teams</RouterLink>
   </nav>
-  <component :is="currentView" />
+  <RouterView/>
 </template>
 
 <style scoped>
