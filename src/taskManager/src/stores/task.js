@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { ref } from "vue"
 
 export const useTaskStore = defineStore('task', {
   state: () => ({
@@ -19,7 +18,7 @@ export const useTaskStore = defineStore('task', {
   },
   actions: {
     async fetchData() {
-      return fetch("http://localhost:3000/tasks")
+      return await fetch("http://localhost:3000/tasks")
         .then((res) => res.json())
         .then((res) => {
           this.tasks = res
@@ -32,7 +31,7 @@ export const useTaskStore = defineStore('task', {
     },
     async addTask(task) {
       try {
-        return fetch("http://localhost:3000/tasks", {
+        return await fetch("http://localhost:3000/tasks", {
           method: 'POST',
           headers: {
             'Accept': 'application/json',
@@ -41,6 +40,33 @@ export const useTaskStore = defineStore('task', {
           body: JSON.stringify(task)
         })
           .then(() => this.tasks.push(task))
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async updateTask(task) {
+      try {
+        return await fetch("http://localhost:3000/tasks/" + task.id, {
+          method: 'PUT',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(task)
+        })
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async deleteTask(id) {
+      try {
+        return await fetch("http://localhost:3000/tasks/" + id, {
+          method: 'DELETE'
+        })
+          .then(() => {
+            const task_index = this.tasks.findIndex((task) => task.id == id)
+            this.tasks.splice(task_index, 1)
+          })
       } catch (error) {
         console.log(error)
       }

@@ -42,7 +42,7 @@
   <div class="taskItemActions">
     <button v-if="!task" id='confirmTaskUpdate' v-on:click="$emit('taskCreate', task)">Ajouter la tâche</button>
     <button v-if="task" id='confirmTaskUpdate' v-on:click="$emit('taskUpdate', task)">Confirmer les modifications</button>
-    <button v-if="task" id='deleteTask' v-on:click="$emit('taskDelete', id)">Supprimer la tâche</button>
+    <button v-if="task" id='deleteTask' v-on:click="$emit('taskDelete', task.id)">Supprimer la tâche</button>
   </div>
 </template>
 

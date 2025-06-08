@@ -272,30 +272,6 @@
       "estimatedTime": 1,
       "step": 3,
       "assignedTo": 18
-    },
-    {
-      "label": "ma nouvelle tâche",
-      "estimatedTime": "4",
-      "step": "0",
-      "projectID": 1,
-      "assignedTo": 7,
-      "id": 6
-    },
-    {
-      "label": "dsqklendapksdq",
-      "estimatedTime": "12",
-      "step": "0",
-      "projectID": 1,
-      "assignedTo": 6,
-      "id": 7
-    },
-    {
-      "label": "super tache de fou",
-      "estimatedTime": "12",
-      "step": "0",
-      "projectID": 2,
-      "assignedTo": 8,
-      "id": 8
     }
   ]
 }

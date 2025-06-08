@@ -30,21 +30,17 @@ function taskCreate() {
 }
 
 function taskUpdate(task) {
-  task.label = document.getElementById('taskLabel').value;
-  task.estimatedTime = document.getElementById('taskEstimatedTime').value;
-  task.step = document.getElementById('taskStep').value;
-  task.projectID = document.getElementById('taskProjet').value;
-  task.assignedTo = document.getElementById('taskDev').value;
-  document.getElementById('taskLabel').value = '';
-  document.getElementById('taskEstimatedTime').value = 0;
-  document.getElementById('taskStep').value = 0;
-  document.getElementById('taskProjet').value = 0;
-  document.getElementById('taskDev').value = 0;
+  task.label = formData.value.label;
+  task.estimatedTime = formData.value.estimatedTime;
+  task.step = formData.value.step;
+  task.projectID = formData.value.projectID;
+  task.assignedTo = formData.value.assignedTo;
+  taskStore.updateTask(task)
   closeModal();
 }
 
 function taskDelete(id) {
-  tasks.value = tasks.value.filter((task) => id != task.id)
+  taskStore.deleteTask(id)
   closeModal();
 }
 
