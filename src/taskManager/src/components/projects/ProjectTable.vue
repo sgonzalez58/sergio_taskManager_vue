@@ -20,8 +20,8 @@
           {{ teams.find((team) => team.id == project.team_id)?.name }}
         </td>
         <td>
-          <button id="confirmProjectUpdate" v-if="project.team_id != myTeam" @click="$emit('projectAssignTo', project)" :disabled="project.team_id && project.team_id != 0">Assigner mon équipe</button>
-          <button id="withdrawTeamFromProject" v-if="project.team_id == myTeam" @click="$emit('projectWithdrawFrom', project)" :disabled="project.team_id != myTeam">Retirer mon équipe</button>
+          <button id="confirmProjectUpdate" v-if="project.team_id != myTeam?.id" @click="$emit('projectAssignTo', project)" :disabled="project.team_id && project.team_id != 0">Assigner mon équipe</button>
+          <button id="withdrawTeamFromProject" v-if="project.team_id == myTeam?.id" @click="$emit('projectWithdrawFrom', project)" :disabled="project.team_id != myTeam?.id">Retirer mon équipe</button>
         </td>
       </tr>
     </table>
@@ -41,8 +41,7 @@ defineProps({
     required: true
   },
   myTeam : {
-    type: Number,
-    required: true
+    type: Object
   }
 });
 

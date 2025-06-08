@@ -6,48 +6,45 @@
   <div class="projectItemInfo">
     <div class="projectItemInfosPrincipales">
       <div class="flex-col">
-        <label for="projectLabel">Titre du projet</label>
-        <input id="projectLabel" :value="project?.label" placeholder="Titre du project">
+        <p>Titre du projet</p>
+        <input id="projectName" v-model="formData.project_name" placeholder="Titre du project">
       </div>
     </div>
     <div class="projectItemInfosEquipe">
       <div class="flex-col">
         <p>Equipe assigné à la tâche</p>
-        <select id="projectTeam" :value="project?.team_id ? project?.team_id : myTeam">
+        <select id="projectTeam" v-model="formData.team_id">
           <option value="0">No team assigned</option>
-          <option v-for="team in teams" :key="team.id" :value="team.id" :disabled="team.id != myTeam">{{ team.name }}</option>
+          <option v-for="team in teams" :key="team.id" :value="team.id" :disabled="team.id != myTeam.id">{{ team.name }}</option>
         </select>
       </div>
     </div>
   </div>
   <div class="projectItemActions">
-    <button v-if="!project" id='confirmprojectUpdate' v-on:click="$emit('projectCreate', project)">Ajouter le projet</button>
-    <!-- <button v-if="projecta id='confirmprojectUpdate' v-on:click="$emit('projectUpdate', project)">Confirmer les modifications</button> -->
-    <button v-if="project" id='deleteproject' v-on:click="$emit('projectDelete', id)">Supprimer le projet</button>
+    <button v-if="!project" id='confirmProjectUpdate' v-on:click="$emit('projectCreate')">Ajouter le projet</button>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue"
-
-const teams = ref([]);
-
-fetch('http://localhost:3000/teams')
-  .then((res) => res.json())
-  .then((res) => teams.value = res)
-
 
 defineProps({
+  formData:{
+    type: Object,
+    required: true
+  },
   project: {
     type: Object
   },
   myTeam : {
-    type: Number,
+    type: Object
+  },
+  teams : {
+    type: Array,
     required: true
   }
 });
 
-defineEmits([/*'projectUpdate', */'projectDelete', 'closeModal', 'projectCreate'])
+defineEmits(['closeModal', 'projectCreate'])
 </script>
 
 <style>
@@ -125,7 +122,7 @@ defineEmits([/*'projectUpdate', */'projectDelete', 'closeModal', 'projectCreate'
   flex-wrap: wrap;
 }
 
-#confirmprojectUpdate{
+#confirmProjectUpdate{
   background-color: rgb(94, 211, 234);
   color: white;
   padding: 8px 14px;
@@ -134,7 +131,7 @@ defineEmits([/*'projectUpdate', */'projectDelete', 'closeModal', 'projectCreate'
   transition-duration: 0.3s;
 }
 
-#confirmprojectUpdate:hover{
+#confirmProjectUpdate:hover{
   background-color: white;
   color: rgb(5, 156, 186);
 }

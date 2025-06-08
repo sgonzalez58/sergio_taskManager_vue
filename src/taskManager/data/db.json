@@ -255,14 +255,24 @@
       "team_id": 2
     },
     {
-      "id": 5,
       "project_name": "Huawei",
-      "team_id": 2
+      "team_id": 2,
+      "id": 5
     },
     {
       "id": 6,
       "project_name": "Allview",
       "team_id": 1
+    },
+    {
+      "team_id": 2,
+      "label": "test",
+      "id": 7
+    },
+    {
+      "project_name": "test",
+      "team_id": 2,
+      "id": 8
     }
   ],
   "tasks": [
@@ -305,6 +315,14 @@
       "estimatedTime": 1,
       "step": 3,
       "assignedTo": 18
+    },
+    {
+      "label": "ma nouvelle tâche",
+      "estimatedTime": 4,
+      "step": "0",
+      "projectID": 1,
+      "assignedTo": 22,
+      "id": 6
     }
   ]
 }

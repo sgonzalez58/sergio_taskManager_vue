@@ -7,11 +7,9 @@ import taskItem from "../components/tasks/TaskItem.vue"
 import TaskTable from "../components/tasks/TaskTable.vue"
 
 const taskStore = useTaskStore();
-const userStore = useUserStore();
 
 const tasks = ref([])
 const current_id = ref(1);
-
 onMounted(async () =>{
   if(taskStore.getTasks === undefined){
     await taskStore.fetchData();
@@ -20,9 +18,10 @@ onMounted(async () =>{
   current_id.value = taskStore.getCurrentId;
 })
 
+const userStore = useUserStore();
+
 const openTaskItem = ref(false)
 const formData = ref({});
-
 let currentTaskOpen = ref({})
 
 function taskCreate() {
@@ -32,17 +31,17 @@ function taskCreate() {
 }
 
 function taskUpdate() {
-  currentTaskOpen.label = formData.value.label;
-  currentTaskOpen.estimatedTime = formData.value.estimatedTime;
-  currentTaskOpen.step = formData.value.step;
-  currentTaskOpen.projectID = formData.value.projectID;
-  currentTaskOpen.assignedTo = formData.value.assignedTo;
-  taskStore.updateTask(currentTaskOpen)
+  currentTaskOpen.value.label = formData.value.label;
+  currentTaskOpen.value.estimatedTime = formData.value.estimatedTime;
+  currentTaskOpen.value.step = formData.value.step;
+  currentTaskOpen.value.projectID = formData.value.projectID;
+  currentTaskOpen.value.assignedTo = formData.value.assignedTo;
+  taskStore.updateTask(currentTaskOpen.value)
   closeModal();
 }
 
-function taskDelete(id) {
-  taskStore.deleteTask(id)
+function taskDelete() {
+  taskStore.deleteTask(currentTaskOpen.value.id)
   closeModal();
 }
 
@@ -81,7 +80,7 @@ function closeModal() {
       <div v-if="openTaskItem" class="overlay" @click="closeModal"></div>
     </Teleport>
 
-    <taskTable :tasks="tasks" @taskRead="taskRead" @closeModal="closeModal"/>
+    <TaskTable :tasks="tasks" @taskRead="taskRead" @closeModal="closeModal"/>
   </main>
 </template>
 

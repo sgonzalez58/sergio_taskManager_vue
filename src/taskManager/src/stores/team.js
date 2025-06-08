@@ -14,6 +14,9 @@ export const useTeamStore = defineStore('team', {
     },
     getCurrentId: (state) => {
       return state.currentId
+    },
+    getMyTeam: (state) => {
+      return (userId) => state.teams.find((team) => team.managerID == userId || team.members.includes(userId))
     }
   },
   actions: {

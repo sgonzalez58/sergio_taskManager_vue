@@ -1,69 +1,54 @@
 <script setup>
-import { ref, computed } from "vue"
+import { ref, onMounted } from "vue"
+import { useProjectStore } from "@/stores/project"
+import { useTeamStore } from "@/stores/team"
+import { useUserStore } from "@/stores/user"
 
 import projectTable from "../components/projects/ProjectTable.vue"
 import projectItem from "../components/projects/ProjectItem.vue"
+
+const projectStore = useProjectStore();
 const projects = ref([])
-
 let current_id = ref(1);
+onMounted(async () =>{
+  if(projectStore.getprojects === undefined){
+    await projectStore.fetchData();
+  }
+  projects.value = projectStore.getprojects;
+  current_id.value = projectStore.getCurrentId;
+})
 
-fetch('http://localhost:3000/projects')
-  .then((res) => res.json())
-  .then((res) => {
-    projects.value = res
-    for (const project of projects.value) {
-      if (project.id >= current_id.value) {
-        current_id.value = project.id + 1;
-      }
-    }
-  })
+const teamStore = useTeamStore();
+const teams = ref([])
+const myTeam = ref(undefined)
+onMounted(async () =>{
+  if(teamStore.getTeams === undefined){
+    await teamStore.fetchData();
+  }
+  teams.value = teamStore.getTeams;
+  const userStore = useUserStore();
+  myTeam.value = teamStore.getMyTeam(userStore.getUserInfo.id)
+})
 
-const teams = ref([]);
-
-fetch('http://localhost:3000/teams')
-  .then((res) => res.json())
-  .then((res) => {
-    teams.value = res
-  })
-
-const myTeam = ref(1)
 
 const openProjectItem = ref(false)
-
+const formData = ref({});
 let currentProjectOpen = ref({})
 
 function projectCreate() {
-  let newProject = {
-    project_name: document.getElementById('projectLabel').value,
-    id: current_id.value++,
-    team_id: document.getElementById('projectTeam').value
-  };
-  projects.value.push(newProject)
-  document.getElementById('projectLabel').value = '';
-  document.getElementById('projectTeam').value = 0;
-  closeModal();
-}
-
-// function projectUpdate(task) {
-//   task.label = document.getElementById('taskLabel').value;
-//   task.estimatedTime = document.getElementById('taskEstimatedTime').value;
-//   task.step = document.getElementById('taskStep').value;
-//   task.projectID = document.getElementById('taskProjet').value;
-//   task.assignedTo = document.getElementById('taskDev').value;
-//   document.getElementById('taskLabel').value = '';
-//   document.getElementById('taskEstimatedTime').value = 0;
-//   document.getElementById('taskStep').value = 0;
-//   document.getElementById('taskProjet').value = 0;
-//   document.getElementById('taskDev').value = 0;
-//   closeModal();
-// }
-
-function projectDelete(id) {
-  projects.value = projects.value.filter((project) => id != project.id)
+  formData.value.id = current_id.value++;
+  projectStore.addProject(formData.value);
   closeModal();
 }
 
 function projectRead(project) {
+  formData.value = {team_id: myTeam.value.id};
+  if(project){
+    formData.value = {
+      project_name: project.project_name,
+      team_id: project.team_id
+    }
+  }
   currentProjectOpen.value = project;
   openProjectItem.value = true;
 }
@@ -73,13 +58,17 @@ function closeModal() {
 }
 
 function projectAssignTo(project) {
-  project.team_id = myTeam.value;
+  project.team_id = myTeam.value.id;
+  projectStore.updateProject(project)
 }
 
 function projectWithdrawFrom(project) {
-  if(confirm("Etes vous sûr de vouloir retirer votre équipe de ce projet ?"))
+  if(confirm("Etes vous sûr de vouloir retirer votre équipe de ce projet ?")){
     project.team_id = 0;
+    projectStore.updateProject(project)
+  }
 }
+
 </script>
 
 <template>
@@ -92,13 +81,12 @@ function projectWithdrawFrom(project) {
 
     <Teleport to="body">
       <div v-if="openProjectItem" class="modal">
-        <projectItem :project="currentProjectOpen" :myTeam="myTeam" @projectDelete="projectDelete" @closeModal="closeModal"
-          @projectCreate="projectCreate" />
+        <projectItem :project="currentProjectOpen" :formData="formData" :myTeam="myTeam" :teams="teams" @closeModal="closeModal" @projectCreate="projectCreate" />
       </div>
       <div v-if="openProjectItem" class="overlay" @click="closeModal"></div>
     </Teleport>
 
-    <projectTable :projects="projects" :teams="teams" :myTeam="myTeam" @projectRead="projectRead" @closeModal="closeModal" @projectAssignTo="projectAssignTo" @projectWithdrawFrom="projectWithdrawFrom"/>
+    <projectTable :projects="projects" :teams="teams" :myTeam="myTeam" @projectAssignTo="projectAssignTo" @projectWithdrawFrom="projectWithdrawFrom"/>
   </main>
 </template>
 

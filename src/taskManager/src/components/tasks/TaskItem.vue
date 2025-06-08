@@ -1,6 +1,6 @@
 <template>
   <div class="taskItemHeader">
-    {{ formData?.id ? "Modification de tâche" : "Création d'une tâche" }}
+    {{ task ? "Modification de tâche" : "Création d'une tâche" }}
     <button id='closeModal' v-on:click="$emit('closeModal')">X</button>
   </div>
   <form class="taskItemInfo">
@@ -10,8 +10,8 @@
         <input id="taskLabel" v-model="formData.label" placeholder="Titre de la tâche">
       </div>
       <div class="flex-col">
-        <p>Temps estimé de travail : {{ task?.estimatedTime }} jours</p>
-        <input id="taskEstimatedTime" placeholder="modifier le temps estimé" v-model="formData.estimatedTime" />
+        <p>Temps estimé de travail : {{ formData.estimatedTime }} jours</p>
+        <input type="number" id="taskEstimatedTime" placeholder="modifier le temps estimé" v-model="formData.estimatedTime" />
       </div>
       <div class="flex-col">
         <p>Etat de la tâche</p>
@@ -40,9 +40,9 @@
     </div>
   </form>
   <div class="taskItemActions">
-    <button v-if="!task" id='confirmTaskUpdate' v-on:click="$emit('taskCreate', task)">Ajouter la tâche</button>
-    <button v-if="task" id='confirmTaskUpdate' v-on:click="$emit('taskUpdate', task)">Confirmer les modifications</button>
-    <button v-if="task" id='deleteTask' v-on:click="$emit('taskDelete', task.id)">Supprimer la tâche</button>
+    <button v-if="!task" id='confirmTaskUpdate' v-on:click="$emit('taskCreate')">Ajouter la tâche</button>
+    <button v-if="task" id='confirmTaskUpdate' v-on:click="$emit('taskUpdate')">Confirmer les modifications</button>
+    <button v-if="task" id='deleteTask' v-on:click="$emit('taskDelete')">Supprimer la tâche</button>
   </div>
 </template>
 
