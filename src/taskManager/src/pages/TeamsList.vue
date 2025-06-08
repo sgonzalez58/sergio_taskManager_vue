@@ -1,31 +1,30 @@
 <script setup>
-import { ref } from "vue"
+import { ref, onMounted } from "vue"
+import { useTeamStore } from "@/stores/team"
+import { useUserStore } from "@/stores/user"
 
 import teamTable from "../components/teams/TeamTable.vue"
 import teamItem from "../components/teams/TeamItem.vue"
 
+const teamStore = useTeamStore();
 const teams = ref([])
-
 let current_id = ref(1);
+onMounted(async () =>{
+  if(teamStore.getTeams === undefined){
+    await teamStore.fetchData();
+  }
+  teams.value = teamStore.getTeams;
+  current_id.value = teamStore.getCurrentId;
+})
 
-fetch('http://localhost:3000/teams')
-  .then((res) => res.json())
-  .then((res) => {
-    teams.value = res
-    for (const team of teams.value) {
-      if (team.id >= current_id.value) {
-        current_id.value = team.id + 1;
-      }
-    }
-  })
-
-const users = ref([]);
-
-fetch('http://localhost:3000/users')
-  .then((res) => res.json())
-  .then((res) => {
-    users.value = res
-  })
+const userStore = useUserStore();
+const users = ref([])
+onMounted(async () =>{
+  if(userStore.getUsers === undefined){
+    await userStore.fetchData();
+  }
+  users.value = userStore.getUsers;
+})
   
 const openTeamItem = ref(false)
 
@@ -34,7 +33,7 @@ let currenTeamOpen = ref({})
 
 function teamCreate() {
   formData.value.id = current_id.value++;  
-  teams.value.push(formData.value)
+  teamStore.addTeam(formData.value);
   closeModal();
 }
 
@@ -42,6 +41,12 @@ function teamUpdate() {
   currenTeamOpen.value.name = formData.value.name;
   currenTeamOpen.value.managerID = formData.value.managerID;
   currenTeamOpen.value.members = formData.value.members;
+  teamStore.updateTeam(currenTeamOpen.value)
+  closeModal();
+}
+
+function teamDelete(id) {
+  teamStore.deleteTeam(id)
   closeModal();
 }
 
@@ -74,7 +79,7 @@ function closeModal() {
 
     <Teleport to="body">
       <div v-if="openTeamItem" class="modal">
-        <teamItem :team="currenTeamOpen" :users="users" :formData="formData" :teams="teams" @closeModal="closeModal" @teamCreate="teamCreate" @teamUpdate="teamUpdate"/>
+        <teamItem :team="currenTeamOpen" :users="users" :formData="formData" :teams="teams" @closeModal="closeModal" @teamCreate="teamCreate" @teamUpdate="teamUpdate" @teamDelete="teamDelete"/>
       </div>
       <div v-if="openTeamItem" class="overlay" @click="closeModal"></div>
     </Teleport>

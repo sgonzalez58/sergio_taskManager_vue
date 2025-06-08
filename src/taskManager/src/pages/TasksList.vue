@@ -1,11 +1,13 @@
 <script setup>
 import { ref, onMounted } from "vue"
 import { useTaskStore } from "@/stores/task"
+import { useUserStore } from "@/stores/user"
 
 import taskItem from "../components/tasks/TaskItem.vue"
 import TaskTable from "../components/tasks/TaskTable.vue"
 
 const taskStore = useTaskStore();
+const userStore = useUserStore();
 
 const tasks = ref([])
 const current_id = ref(1);
@@ -29,13 +31,13 @@ function taskCreate() {
   closeModal();
 }
 
-function taskUpdate(task) {
-  task.label = formData.value.label;
-  task.estimatedTime = formData.value.estimatedTime;
-  task.step = formData.value.step;
-  task.projectID = formData.value.projectID;
-  task.assignedTo = formData.value.assignedTo;
-  taskStore.updateTask(task)
+function taskUpdate() {
+  currentTaskOpen.label = formData.value.label;
+  currentTaskOpen.estimatedTime = formData.value.estimatedTime;
+  currentTaskOpen.step = formData.value.step;
+  currentTaskOpen.projectID = formData.value.projectID;
+  currentTaskOpen.assignedTo = formData.value.assignedTo;
+  taskStore.updateTask(currentTaskOpen)
   closeModal();
 }
 

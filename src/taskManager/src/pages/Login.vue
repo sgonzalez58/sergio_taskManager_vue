@@ -36,7 +36,7 @@ watch(isLoggedIn, async(newAuthStatus) => {
         <label for="loginPassword">Mot de passe:</label>
         <input type="password" id="loginPassword" v-model="formData.password">
       </div>
-      <input type="submit">
+      <input type="submit" value="Se connecter">
     </form>
   </main>
 </template>

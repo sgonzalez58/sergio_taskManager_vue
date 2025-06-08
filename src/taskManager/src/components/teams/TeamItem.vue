@@ -25,9 +25,9 @@
     </div>
   </form>
   <div class="teamItemActions">
-    <button v-if="!team" id='confirmteamUpdate' v-on:click="$emit('teamCreate')">Créer l'utilisateur</button>
+    <button v-if="!team" id='confirmteamUpdate' v-on:click="$emit('teamCreate')">Créer l'équipe</button>
     <button v-if="team" id='confirmteamUpdate' v-on:click="$emit('teamUpdate')">Confirmer les modifications</button>
-    <button v-if="team" id='deleteteam' v-on:click="$emit('teamDelete')">Supprimer l'utilisateur</button>
+    <button v-if="team" id='deleteteam' v-on:click="$emit('teamDelete')">Supprimer l'équipe</button>
   </div>
 </template>
 
@@ -54,10 +54,8 @@ const props = defineProps({
 
 function findFreeManagers(manager_id){
   let managers_already_taken = props.teams.map((team) => team.managerID);
-  console.log(managers_already_taken, manager_id)
   if(manager_id){
     managers_already_taken = managers_already_taken.filter((managerId) => managerId != manager_id);
-    console.log(managers_already_taken);
   }
   return props.users.filter((user) => user.type == "manager" && !managers_already_taken.includes(user.id));
 }
@@ -65,10 +63,8 @@ function findFreeManagers(manager_id){
 function findFreeDeveloppers(members){
   const developers_already_taken_array = props.teams.map((team) => team.members);
   let developers_already_taken = developers_already_taken_array.flat(1);
-  console.log(developers_already_taken)
   if(members){
     developers_already_taken = developers_already_taken.filter((developerId) => !members.includes(developerId));
-    console.log(developers_already_taken)
   }
   return props.users.filter((user) => user.type == "dev" && !developers_already_taken.includes(user.id));
 }

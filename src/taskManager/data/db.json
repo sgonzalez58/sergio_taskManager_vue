@@ -168,6 +168,24 @@
       "last_name": "Gonzalez",
       "type": "admin",
       "id": 21
+    },
+    {
+      "email": "sergiocarlosgonzalez.60@gmail.com",
+      "password": "$2a$10$FCMS12XaFJY2nWPAShjqU.eYG0HVIF4SHxTezjY.bF.VHj5la5dGe",
+      "teamId": 0,
+      "first_name": "Sergio2",
+      "last_name": "Gonzalez",
+      "type": "dev",
+      "id": 22
+    },
+    {
+      "email": "sergio.gonzalez@livecampus.tech",
+      "password": "$2a$10$VK6ynA8YCzQCiNofT85Ry.unB5yYpzoaEiDlVXIwjb7F/bOL7fIhS",
+      "teamId": 0,
+      "first_name": "Sergio",
+      "last_name": "Gonzalez",
+      "type": "manager",
+      "id": 23
     }
   ],
   "teams": [
@@ -184,17 +202,17 @@
       "managerID": 2
     },
     {
-      "id": 2,
       "name": "Flavorless",
+      "managerID": 23,
       "members": [
-        10,
         11,
         12,
         13,
         14,
-        15
+        15,
+        22
       ],
-      "managerID": 3
+      "id": 2
     },
     {
       "id": 3,
@@ -207,6 +225,12 @@
         20
       ],
       "managerID": 4
+    },
+    {
+      "name": "nouvelle équipe",
+      "managerID": "0",
+      "members": [],
+      "id": 4
     }
   ],
   "Projects": [
